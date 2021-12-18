@@ -20,7 +20,6 @@ export const showQuestionnaire = data => {
 		const d = data[idx];
 		const gdata = { data: {}, unit: "%" };
 		const maxans = 30;
-		const obj = {};
 		for (let i = 1; i <= maxans; i++) {
 			const name = "answer" + i;
 			const val = "answer" + i + "n";
@@ -106,8 +105,22 @@ const showCircleGraph = function(c, gdata) {
 		d.push([n, data[n]]);
 		sum += parseFloat(data[n]);
 	}
-	console.log(sum);
 	
+	d.sort((a, b) => {
+		if (a[0] == "その他")
+			return 1;
+		if (b[0] == "その他")
+			return -1;
+		const na = parseFloat(a[1]);
+		const nb = parseFloat(b[1]);
+		if (na < nb) {
+			return 1;
+		} else if (na > nb) {
+			return -1;
+		}
+		return 0;
+	});
+	/*
 	d.sort(function(a, b) {
 		if (a[0] == "その他")
 			return 1;
@@ -119,6 +132,7 @@ const showCircleGraph = function(c, gdata) {
 			return 0;
 		return -1;
 	});
+	*/
 //	dump(d);
 	g.setFont = (sh) => {
 		g.font = "normal " + sh + "px sans-serif";
@@ -150,7 +164,7 @@ const showCircleGraph = function(c, gdata) {
 		const r = Math.min(g.cw, g.ch) / 2 * .95;
 		
 		const max = Math.PI * 2 * animation(t / 100, 1);
-		const f = function(dx, dy, s, v) {
+		const f = (dx, dy, s, v) => {
 			g.translate(dx, dy);
 			let th = -Math.PI / 2;
 			for (let i = 0; i < d.length; i++) {
